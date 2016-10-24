@@ -31,13 +31,9 @@ public class GameRunner implements CommandLineRunner, ApplicationListener<StateC
         this.game = game;
     }
 
-    public void startGame() {
-        game.startGame();
-    }
-
     @Override
     public void run(String... args) throws Exception {
-        startGame();
+        game.startGame();
     }
 
     @Override
