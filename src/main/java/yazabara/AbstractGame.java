@@ -27,6 +27,7 @@ public abstract class AbstractGame implements ApplicationEventPublisherAware {
 
     public void startGame() {
         prepareFirstState();
+        notifyObservers();
         IntStream.range(1, iteration).forEach(value -> nextState());
     }
 
