@@ -1,43 +1,32 @@
-package yazabara.session1.engine;
+package yazabara.session1;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.stereotype.Component;
+import yazabara.AbstractGame;
+import yazabara.session1.engine.SessionOneUtils;
+import yazabara.session1.engine.StateCompletedEvent;
 import yazabara.session1.engine.field.Cell;
 import yazabara.session1.engine.field.Field;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Created by yazab on 24.10.2016.
  */
 @Component
-public class Game implements ApplicationEventPublisherAware {
-
-    @Value("${width}")
-    private int width;
-
-    @Value("${height}")
-    private int height;
-
-    @Value("${iteration}")
-    private int iteration;
+public class FirstGame extends AbstractGame {
 
     private Field state;
 
-    private ApplicationEventPublisher applicationEventPublisher = null;
-
-    public void startGame() {
+    @Override
+    public void prepareFirstState() {
         setState(new Field(SessionOneUtils.getFirstState(width, height)));
-
-        IntStream.range(1, iteration).forEach(value -> nextState());
     }
 
-    private void nextState() {
+    @Override
+    protected void calculateNextState() {
         //TODO remove loop
         //TODO remove if statement
         List<List<Cell>> field = state.getField();
@@ -63,13 +52,12 @@ public class Game implements ApplicationEventPublisherAware {
         setState(new Field(newField));
     }
 
-    private void setState(Field state) {
-        this.state = state;
-        applicationEventPublisher.publishEvent(new StateCompletedEvent(this, this.state));
+    @Override
+    protected ApplicationEvent getEvent() {
+        return new StateCompletedEvent(this, this.state);
     }
 
-    @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        this.applicationEventPublisher = applicationEventPublisher;
+    private void setState(Field state) {
+        this.state = state;
     }
 }
